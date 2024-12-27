@@ -6,13 +6,18 @@ import { ListItem } from "./ListItem.ts";
 import { headers } from "./getHistoryArticles.ts";
 
 export async function list(
-    homepageUrl: string,
-    authCode: string,
+    { homepageUrl, authCode, limit, cursor }: {
+        homepageUrl: string;
+        authCode: string;
+        limit?: number;
+        cursor?: string;
+    },
 ): Promise<ListData> {
     const homepageUrlobj = new URL(homepageUrl);
     const res = await fetchWithStatusCheck(
         new URL(
-            "/trpc/feed.list?batch=1&input=%7B%220%22%3A%7B%7D%7D",
+            "/trpc/feed.list?batch=1&input=" +
+                encodeURIComponent(JSON.stringify({ "0": { limit, cursor } })),
             homepageUrlobj.href,
         ).href,
         {
@@ -55,6 +60,7 @@ export async function listparse(res: Response): Promise<ListData[]> {
 }
 export interface ListData {
     items: ListItem[];
+    nextCursor?: string;
 }
 // import path from 'node:path';
 
@@ -69,12 +75,13 @@ export function printhelp(__filename: string, other: string = "") {
 
 if (import.meta.main) {
     const args = parse(Deno.args, {
-        string: ["homepageUrl", "authCode"],
+        string: ["homepageUrl", "authCode", "limit"],
+
         boolean: ["help"],
     });
     console.log("args:", args);
     if (args.help) {
-        printhelp(__filename);
+        printhelp(__filename, "--limit=50");
         Deno.exit(0);
     }
     //check args exist
@@ -83,11 +90,47 @@ if (import.meta.main) {
         // printhelp();
         Deno.exit(1);
     }
-    console.log(
-        "list:",
-        await list(
-            args.homepageUrl,
-            args.authCode,
-        ),
-    );
+    for await (
+        const data of listIterator(
+            {
+                homepageUrl: args.homepageUrl,
+                authCode: args.authCode,
+                limit: args.limit ? Number(args.limit) : undefined,
+            },
+        )
+    ) {
+        console.log(
+            "list:",
+            data,
+        );
+    }
+}
+
+export async function* listIterator(
+    { homepageUrl, authCode, limit }: {
+        homepageUrl: string;
+        authCode: string;
+        limit?: number;
+    },
+): AsyncGenerator<ListData> {
+    let nextCursor: string | undefined = undefined;
+    const data = await list({
+        homepageUrl,
+        authCode,
+        limit,
+    });
+    yield data;
+    nextCursor = data.nextCursor;
+    while (nextCursor) {
+        const nextdata = await list({
+            homepageUrl,
+            authCode,
+            limit,
+            cursor: nextCursor,
+        });
+        nextCursor = nextdata.nextCursor;
+        yield nextdata;
+        // data.nextCursor = nextdata.nextCursor;
+        // data.items.push(...nextdata.items);
+    }
 }
