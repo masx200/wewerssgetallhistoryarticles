@@ -42,7 +42,7 @@ export async function list(
         ),
     );
     if (dataarray.length === 0) {
-        throw new Error("dataarray is empty");
+        throw new Error("dataarray is empty", { cause: dataarray });
     }
     return dataarray[0];
 }

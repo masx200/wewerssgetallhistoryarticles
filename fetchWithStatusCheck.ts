@@ -13,7 +13,7 @@ export async function fetchWithStatusCheck(
                 method: req.method,
                 status: res.status,
             }),
-            { cause: { response: res } },
+            { cause: res },
         );
     }
 }
