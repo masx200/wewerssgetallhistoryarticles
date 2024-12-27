@@ -1,3 +1,4 @@
+import { batchparse } from "./batchparse.ts";
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
 export const headers = {
     "user-agent":
@@ -7,9 +8,9 @@ export async function getHistoryArticles(
     homepageUrl: string,
     authCode: string,
     mpId: string,
-): Promise<Response> {
+): Promise<Record<string, any>> {
     const homepageUrlobj = new URL(homepageUrl);
-    return fetchWithStatusCheck(
+    const res = await fetchWithStatusCheck(
         new URL(
             "/trpc/feed.getHistoryArticles?batch=1",
             homepageUrlobj.href,
@@ -39,5 +40,17 @@ export async function getHistoryArticles(
             "method": "POST",
         },
     );
+    const dataarray = await getHistoryArticlesparse(
+        res,
+    );
+    if (dataarray.length === 0) {
+        throw new Error("dataarray is empty", { cause: dataarray });
+    }
+    return dataarray[0];
 }
-export async function getHistoryArticlesparse() {}
+export async function getHistoryArticlesparse(
+    res: Response,
+): Promise<Record<string, any>[]> {
+    const results = await batchparse(res);
+    return results.map((a) => a.data) as Record<string, any>[];
+}
