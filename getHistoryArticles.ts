@@ -66,7 +66,7 @@ if (import.meta.main) {
     });
     console.log("args:", args);
     if (args.help) {
-        printhelp(__filename, "--mpId=***************");
+        printhelp(__filename, ["--mpId=***************"]);
         Deno.exit(0);
     }
     if (!args.mpId || !args.authCode) {
@@ -81,7 +81,7 @@ if (import.meta.main) {
         Deno.exit(1);
     }
     console.log(
-        "getInProgressHistoryMp:",
+        "getHistoryArticles:",
         await getHistoryArticles(
             args.homepageUrl,
             args.authCode,

@@ -58,6 +58,14 @@ export async function listparse(res: Response): Promise<ListData[]> {
     const results = await batchparse(res);
     return results.map((a) => a.data) as ListData[];
 }
+/**
+ * 列表数据接口
+ *
+ * 该接口定义了列表数据的结构，包括列表项数组和下一个游标（可选）。
+ *
+ * @property items 列表项数组。
+ * @property nextCursor 可选的下一个游标，用于分页加载更多数据。
+ */
 export interface ListData {
     items: ListItem[];
     nextCursor?: string;
@@ -66,14 +74,32 @@ export interface ListData {
 
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
-export function printhelp(__filename: string, other: string = "") {
-    console.log(
-        `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=*************** ` +
-            other,
-    );
+/**
+ * 打印帮助信息函数
+ *
+ * 该函数用于打印程序的使用帮助信息。它接受当前脚本的文件名作为参数，
+ * 并可选地接受其他字符串参数，以进一步定制帮助信息的输出。
+ *
+ * @param __filename 当前脚本的文件名，用于在命令行中指定运行的脚本。
+ * @param other 可选参数，用于添加其他帮助信息。
+ */
+export function printhelp(__filename: string, other: string[] = [""]) {
+    for (const str of other) {
+        console.log(
+            `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=*************** ` +
+                str,
+        );
+    }
 }
 
 if (import.meta.main) {
+    await main();
+}
+/**
+ * 主函数，负责解析命令行参数，验证参数，并打印帮助信息。
+ * 该函数使用异步语法来处理异步操作。
+ */
+async function main() {
     const args = parse(Deno.args, {
         string: ["homepageUrl", "authCode", "limit"],
 
@@ -81,7 +107,7 @@ if (import.meta.main) {
     });
     console.log("args:", args);
     if (args.help) {
-        printhelp(__filename, "--limit=50");
+        printhelp(__filename, ["", "--limit=50"]);
         Deno.exit(0);
     }
     //check args exist
@@ -106,6 +132,16 @@ if (import.meta.main) {
     }
 }
 
+/**
+ * 异步生成器函数，用于迭代获取列表数据
+ * 该函数会根据提供的参数，不断加载列表的下一页数据，并逐页产出
+ *
+ * @param {Object} params - 包含请求参数的对象
+ * @param {string} params.homepageUrl - 主页URL，用于构建请求
+ * @param {string} params.authCode - 认证码，用于请求认证
+ * @param {number} [params.limit] - 每页数据的限制数量，可选
+ * @yields {AsyncGenerator<ListData>} - 产生列表数据的异步生成器
+ */
 export async function* listIterator(
     { homepageUrl, authCode, limit }: {
         homepageUrl: string;
