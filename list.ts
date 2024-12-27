@@ -1,4 +1,5 @@
 import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
+import { fileURLToPath } from "node:url";
 import { batchparse } from "./batchparse.ts";
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
 import { ListItem } from "./ListItem.ts";
@@ -6,9 +7,9 @@ import { ListItem } from "./ListItem.ts";
 export async function list(
     homepageUrl: string,
     authCode: string,
-): Promise<ListData[]> {
+): Promise<ListData> {
     const homepageUrlobj = new URL(homepageUrl);
-    return listparse(
+    const dataarray = await listparse(
         await fetchWithStatusCheck(
             new URL(
                 "/trpc/feed.list?batch=1&input=%7B%220%22%3A%7B%7D%7D",
@@ -40,6 +41,10 @@ export async function list(
             },
         ),
     );
+    if (dataarray.length === 0) {
+        throw new Error("dataarray is empty");
+    }
+    return dataarray[0];
 }
 export async function listparse(res: Response): Promise<ListData[]> {
     const results = await batchparse(res);
@@ -49,7 +54,6 @@ export interface ListData {
     items: ListItem[];
 }
 // import path from 'node:path';
-import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);

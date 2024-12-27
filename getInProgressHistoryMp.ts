@@ -4,8 +4,12 @@ export async function getInProgressHistoryMp(
     homepageUrl: string,
     authCode: string,
 ): Promise<Response> {
+    const homepageUrlobj = new URL(homepageUrl);
     return fetchWithStatusCheck(
-        homepageUrl + "/trpc/feed.getInProgressHistoryMp?batch=1&input=%7B%7D",
+        new URL(
+            "/trpc/feed.getInProgressHistoryMp?batch=1&input=%7B%7D",
+            homepageUrlobj.href,
+        ).href,
         {
             "headers": {
                 "accept": "*/*",
@@ -21,7 +25,10 @@ export async function getInProgressHistoryMp(
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
-                "Referer": homepageUrl + "/dash/feeds",
+                "Referer": new URL(
+                    "/dash/feeds",
+                    homepageUrlobj.href,
+                ).href,
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },
             "body": null,

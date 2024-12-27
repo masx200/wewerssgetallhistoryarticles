@@ -5,8 +5,12 @@ export async function getHistoryArticles(
     authCode: string,
     mpId: string,
 ): Promise<Response> {
+    const homepageUrlobj = new URL(homepageUrl);
     return fetchWithStatusCheck(
-        homepageUrl + "/trpc/feed.getHistoryArticles?batch=1",
+        new URL(
+            "/trpc/feed.getHistoryArticles?batch=1",
+            homepageUrlobj.href,
+        ).href,
         {
             "headers": {
                 "accept": "*/*",
@@ -21,7 +25,10 @@ export async function getHistoryArticles(
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
-                "Referer": homepageUrl + `/dash/feeds/${mpId}`,
+                "Referer": new URL(
+                    `/dash/feeds/${mpId}`,
+                    homepageUrlobj.href,
+                ).href,
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },
             "body": '{"0":{"mpId":' + mpId + "}}",
