@@ -4,7 +4,17 @@ import { batchparse } from "./batchparse.ts";
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
 import { ListItem } from "./ListItem.ts";
 import { headers } from "./getHistoryArticles.ts";
-
+/**
+ * 异步获取数据列表。
+ *
+ * 该函数根据提供的主页URL和认证码进行网络请求，获取数据。
+ *
+ * @param {string} homepageUrl - 主页URL。
+ * @param {string} authCode - 认证码。
+ * @param {number} [limit] - 返回数据的最大数量。
+ * @param {string} [cursor] - 用于分页的游标。
+ * @returns {Promise<ListData>} - 返回的数据列表。
+ */
 export async function list(
     { homepageUrl, authCode, limit, cursor }: {
         homepageUrl: string;
@@ -54,6 +64,14 @@ export async function list(
     }
     return dataarray[0];
 }
+/**
+ * 解析列表数据函数
+ *
+ * 该函数用于解析响应数据并返回列表数据数组。
+ *
+ * @param res 响应对象，包含需要解析的数据。
+ * @returns 返回解析后的列表数据数组。
+ */
 export async function listparse(res: Response): Promise<ListData[]> {
     const results = await batchparse(res);
     return results.map((a) => a.data) as ListData[];
