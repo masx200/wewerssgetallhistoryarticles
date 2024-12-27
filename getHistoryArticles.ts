@@ -82,10 +82,18 @@ if (import.meta.main) {
     }
     console.log(
         "getHistoryArticles:",
-        await getHistoryArticles(
-            args.homepageUrl,
-            args.authCode,
-            args.mpId,
-        ),
+        {
+            homepageUrl: args.homepageUrl,
+            authCode: args.authCode,
+            mpId: args.mpId,
+        },
     );
+    // console.log(
+    //     "getHistoryArticles:",
+    await getHistoryArticles(
+        args.homepageUrl,
+        args.authCode,
+        args.mpId,
+    ); //,
+    // );
 }

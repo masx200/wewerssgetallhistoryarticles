@@ -32,15 +32,22 @@ export async function wewerssgetallhistoryarticles(args: {
         for (const item of data.items) {
             if (item.hasHistory) {
                 await processOngoingHistory(args);
-
                 console.log(
                     "getHistoryArticles:",
-                    await getHistoryArticles(
-                        args.homepageUrl,
-                        args.authCode,
-                        item.id,
-                    ),
+                    {
+                        homepageUrl: args.homepageUrl,
+                        authCode: args.authCode,
+                        mpId: item.id,
+                    },
                 );
+                // console.log(
+                //     "getHistoryArticles:",
+                await getHistoryArticles(
+                    args.homepageUrl,
+                    args.authCode,
+                    item.id,
+                ); //,
+                // );
             }
         }
     }
