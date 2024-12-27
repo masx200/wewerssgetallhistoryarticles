@@ -1,6 +1,8 @@
+import { parseArgs } from "@std/cli/parse-args";
 import { getHistoryArticles } from "./getHistoryArticles.ts";
 import { getInProgressHistoryMp } from "./getInProgressHistoryMp.ts";
-import { listIterator } from "./list.ts";
+import { listIterator, printhelp } from "./list.ts";
+import { fileURLToPath } from "node:url";
 /**
  * 异步获取所有历史文章。
  *
@@ -73,4 +75,36 @@ async function processOngoingHistory(
             continue;
         }
     }
+}
+
+const __filename = fileURLToPath(import.meta.url);
+/**
+ * 主函数，负责解析命令行参数，验证参数，并打印帮助信息。
+ * 该函数使用异步语法来处理异步操作。
+ */
+async function main() {
+    const args = parseArgs(Deno.args, {
+        string: ["homepageUrl", "authCode", "limit"],
+
+        boolean: ["help"],
+    });
+    console.log("args:", args);
+    if (args.help) {
+        printhelp(__filename, ["", "--limit=50"]);
+        Deno.exit(0);
+    }
+    //check args exist
+    if (!args.homepageUrl || !args.authCode) {
+        console.error("homepageUrl and authCode are required");
+        // printhelp();
+        Deno.exit(1);
+    }
+    await wewerssgetallhistoryarticles({
+        homepageUrl: args.homepageUrl,
+        authCode: args.authCode,
+        limit: args.limit,
+    });
+}
+if (import.meta.main) {
+    await main();
 }
