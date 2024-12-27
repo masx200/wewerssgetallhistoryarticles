@@ -60,7 +60,7 @@ export interface ListData {
 
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
-export function printhelp() {
+export function printhelp(__filename: string) {
     console.log(
         `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=***************`,
     );
@@ -73,7 +73,7 @@ if (import.meta.main) {
     });
     console.log("args:", args);
     if (args.help) {
-        printhelp();
+        printhelp(__filename);
         Deno.exit(0);
     }
     //check args exist

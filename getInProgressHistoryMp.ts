@@ -3,6 +3,7 @@ import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
 import { headers } from "./getHistoryArticles.ts";
 import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
 import { printhelp } from "./list.ts";
+import { fileURLToPath } from "node:url";
 export async function getInProgressHistoryMp(
     homepageUrl: string,
     authCode: string,
@@ -58,6 +59,7 @@ export interface getInProgressHistoryData {
     page: number;
 }
 
+const __filename = fileURLToPath(import.meta.url);
 if (import.meta.main) {
     const args = parse(Deno.args, {
         string: ["homepageUrl", "authCode"],
@@ -65,7 +67,7 @@ if (import.meta.main) {
     });
     console.log("args:", args);
     if (args.help) {
-        printhelp();
+        printhelp(__filename);
         Deno.exit(0);
     }
     //check args exist
