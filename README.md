@@ -34,4 +34,4 @@ Usage:
 
 Usage:
 
-`******\deno.exe run -A ******\getInProgressHistoryMp.ts --homepageUrl=https://***************** --authCode=*************** --mpId=***************`
+`******\deno.exe run -A ******\getHistoryArticles.ts --homepageUrl=https://***************** --authCode=*************** --mpId=***************`
