@@ -1,5 +1,8 @@
+import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
 import { batchparse } from "./batchparse.ts";
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
+import { printhelp } from "./list.ts";
+import { fileURLToPath } from "node:url";
 export const headers = {
     "user-agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -8,7 +11,7 @@ export async function getHistoryArticles(
     homepageUrl: string,
     authCode: string,
     mpId: string,
-): Promise<Record<string, any>> {
+): Promise<any> {
     const homepageUrlobj = new URL(homepageUrl);
     const res = await fetchWithStatusCheck(
         new URL(
@@ -36,7 +39,7 @@ export async function getHistoryArticles(
                 "Referrer-Policy": "strict-origin-when-cross-origin",
                 ...headers,
             },
-            "body": '{"0":{"mpId":' + mpId + "}}",
+            "body": JSON.stringify({ 0: { mpId: mpId } }),
             "method": "POST",
         },
     );
@@ -50,7 +53,39 @@ export async function getHistoryArticles(
 }
 export async function getHistoryArticlesparse(
     res: Response,
-): Promise<Record<string, any>[]> {
+): Promise<any[]> {
     const results = await batchparse(res);
-    return results.map((a) => a.data) as Record<string, any>[];
+    return results.map((a) => a.data) as any[];
+}
+
+const __filename = fileURLToPath(import.meta.url);
+if (import.meta.main) {
+    const args = parse(Deno.args, {
+        string: ["homepageUrl", "authCode", "mpId"],
+        boolean: ["help"],
+    });
+    console.log("args:", args);
+    if (args.help) {
+        printhelp(__filename, "--mpId=***************");
+        Deno.exit(0);
+    }
+    if (!args.mpId || !args.authCode) {
+        console.error("mpId and authCode are required");
+        // printhelp();
+        Deno.exit(1);
+    }
+    //check args exist
+    if (!args.homepageUrl || !args.authCode) {
+        console.error("homepageUrl and authCode are required");
+        // printhelp();
+        Deno.exit(1);
+    }
+    console.log(
+        "getInProgressHistoryMp:",
+        await getHistoryArticles(
+            args.homepageUrl,
+            args.authCode,
+            args.mpId,
+        ),
+    );
 }

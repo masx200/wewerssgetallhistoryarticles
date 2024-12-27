@@ -60,9 +60,10 @@ export interface ListData {
 
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
-export function printhelp(__filename: string) {
+export function printhelp(__filename: string, other: string = "") {
     console.log(
-        `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=***************`,
+        `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=*************** ` +
+            other,
     );
 }
 
