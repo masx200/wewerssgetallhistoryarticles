@@ -10,38 +10,39 @@ export async function list(
     authCode: string,
 ): Promise<ListData> {
     const homepageUrlobj = new URL(homepageUrl);
-    const dataarray = await listparse(
-        await fetchWithStatusCheck(
-            new URL(
-                "/trpc/feed.list?batch=1&input=%7B%220%22%3A%7B%7D%7D",
-                homepageUrlobj.href,
-            ).href,
-            {
-                "headers": {
-                    "accept": "*/*",
-                    "accept-language": "zh-CN,zh;q=0.9",
-                    "authorization": authCode,
-                    "content-type": "application/json",
-                    "priority": "u=1, i",
-                    "referrer-policy": "strict-origin-when-cross-origin",
-                    "sec-ch-ua":
-                        '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": '"Windows"',
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-origin",
-                    "Referer": new URL(
-                        "/dash/feeds",
-                        homepageUrlobj.href,
-                    ).href,
-                    "Referrer-Policy": "strict-origin-when-cross-origin",
-                    ...headers,
-                },
-                "body": null,
-                "method": "GET",
+    const res = await fetchWithStatusCheck(
+        new URL(
+            "/trpc/feed.list?batch=1&input=%7B%220%22%3A%7B%7D%7D",
+            homepageUrlobj.href,
+        ).href,
+        {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "zh-CN,zh;q=0.9",
+                "authorization": authCode,
+                "content-type": "application/json",
+                "priority": "u=1, i",
+                "referrer-policy": "strict-origin-when-cross-origin",
+                "sec-ch-ua":
+                    '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "Referer": new URL(
+                    "/dash/feeds",
+                    homepageUrlobj.href,
+                ).href,
+                "Referrer-Policy": "strict-origin-when-cross-origin",
+                ...headers,
             },
-        ),
+            "body": null,
+            "method": "GET",
+        },
+    );
+    const dataarray = await listparse(
+        res,
     );
     if (dataarray.length === 0) {
         throw new Error("dataarray is empty", { cause: dataarray });
@@ -59,7 +60,7 @@ export interface ListData {
 
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
-function printhelp() {
+export function printhelp() {
     console.log(
         `Usage:\n${Deno.execPath()} run -A ${__filename} --homepageUrl=https://***************** --authCode=***************`,
     );

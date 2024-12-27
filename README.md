@@ -20,7 +20,11 @@ wewerss get all history articles
 
 Usage:
 
-`*:\*****\******\********\********\deno.exe run -A **:\********\********\********\********\list.ts --homepageUrl=https://***************** --authCode=***************`
+`**\*****\******\********\********\deno.exe run -A **:\********\********\********\********\list.ts --homepageUrl=https://***************** --authCode=***************`
 
-2. xxxx
+2. getInProgressHistoryMp
+
+Usage:
+
+`**\*****\******\********\********\deno.exe run -A **:\********\********\********\********\getInProgressHistoryMp.ts --homepageUrl=https://***************** --authCode=***************`
 3. xxxx
