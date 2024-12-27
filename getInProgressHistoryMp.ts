@@ -1,4 +1,5 @@
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
+import { headers } from "./getHistoryArticles.ts";
 
 export async function getInProgressHistoryMp(
     homepageUrl: string,
@@ -30,6 +31,7 @@ export async function getInProgressHistoryMp(
                     homepageUrlobj.href,
                 ).href,
                 "Referrer-Policy": "strict-origin-when-cross-origin",
+                ...headers,
             },
             "body": null,
             "method": "GET",

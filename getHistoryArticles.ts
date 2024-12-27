@@ -1,5 +1,8 @@
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
-
+export const headers = {
+    "user-agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+};
 export async function getHistoryArticles(
     homepageUrl: string,
     authCode: string,
@@ -30,6 +33,7 @@ export async function getHistoryArticles(
                     homepageUrlobj.href,
                 ).href,
                 "Referrer-Policy": "strict-origin-when-cross-origin",
+                ...headers,
             },
             "body": '{"0":{"mpId":' + mpId + "}}",
             "method": "POST",

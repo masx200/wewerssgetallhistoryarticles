@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { batchparse } from "./batchparse.ts";
 import { fetchWithStatusCheck } from "./fetchWithStatusCheck.ts";
 import { ListItem } from "./ListItem.ts";
+import { headers } from "./getHistoryArticles.ts";
 
 export async function list(
     homepageUrl: string,
@@ -35,6 +36,7 @@ export async function list(
                         homepageUrlobj.href,
                     ).href,
                     "Referrer-Policy": "strict-origin-when-cross-origin",
+                    ...headers,
                 },
                 "body": null,
                 "method": "GET",
