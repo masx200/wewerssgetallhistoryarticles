@@ -29,7 +29,7 @@ export async function wewerssgetallhistoryarticles(args: {
             "list:",
             data,
         );
-        for (const item of data.items) {
+        for (const item of data.items.sort(() => Math.random() - 0.5)) {
             if (item.hasHistory) {
                 await processOngoingHistory(args);
                 console.log(
