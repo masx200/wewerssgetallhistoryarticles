@@ -40,9 +40,16 @@ Usage:
 
 Usage:
 
-`******\deno.exe run -A ******\wewerssgetallhistoryarticles.ts --homepageUrl=https://***************** --authCode=***************`
-
-`******\deno.exe run -A ******\wewerssgetallhistoryarticles.ts --homepageUrl=https://***************** --authCode=*************** --limit=50`
+```txt
+Options:
+      --version      Show version number                               [boolean]
+  -h                 Show help                                         [boolean]
+      --homepageUrl  The homepage URL                                   [string]
+      --authCode     The authentication code                            [string]
+      --limit        The limit number                                   [string]
+      --cron         The cron expression                                [string]
+      --help         Show help                                         [boolean]
+```
 
 ## 功能解释
 

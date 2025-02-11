@@ -4,6 +4,8 @@
         "singleQuote": false
     },
     "imports": {
-        "@std/cli": "jsr:@std/cli@^1.0.9"
+        "@std/cli": "jsr:@std/cli@^1.0.9",
+        "node-cron": "npm:node-cron@^3.0.3",
+        "yargs": "npm:yargs@^17.7.2"
     }
 }
